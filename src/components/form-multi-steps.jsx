@@ -1,8 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
 import { AnimatePresence, motion } from "framer-motion";
-import { cpf } from "cpf-cnpj-validator";
-import isEmail from "validator/lib/isEmail";
+import { steps } from "../constant/step-form";
+import { buscarEnderecoPorCEP } from "../services/cep-services";
+import { handleFilterTextInImage } from "../services/filter-text-image";
+import { AddressForm } from "./address-form";
+import { SocialMediaUserForm } from "./social-media-form-user";
 
 export const FormMultiSteps = () => {
   const { userData, updateUserData } = useContext(UserContext);
@@ -95,119 +98,6 @@ export const FormMultiSteps = () => {
     });
   };
 
-  const steps = [
-    {
-      label: "Qual seu nome completo?",
-      name: "name",
-      type: "text",
-      validation: (value) => /^[A-Za-zÀ-ÿ\s]+$/.test(value),
-    },
-    {
-      label: "Qual seu melhor e-mail?",
-      name: "email",
-      type: "email",
-      validation: (value) => isEmail(value),
-    },
-    {
-      label: "Informe seu CPF",
-      name: "cpf",
-      type: "text",
-      validation: (value) => cpf.isValid(value),
-    },
-    {
-      label: "Envie uma foto do seu CPF",
-      name: "cpfImage",
-      type: "file",
-    },
-    {
-      label: "Qual seu endereço completo?",
-      name: "address",
-      type: "text",
-    },
-    {
-      label: "Em quais jogos da FURIA você mais torce?",
-      name: "interests",
-      type: "button",
-      options: [
-        "Free Fire",
-        "Pubg",
-        "Valorant",
-        "Rocket League",
-        "Apex Legends",
-        "CS GO",
-        "Futebol de 7",
-      ],
-      validation: (value) => value.length > 0,
-    },
-    {
-      label: "Quais redes sociais da FURIA você já segue?",
-      name: "socialMediasFollow",
-      type: "button",
-      options: [
-        "Facebook",
-        "Instagram",
-        "Twitter",
-        "LinkedIn",
-        "TikTok",
-        "YouTube",
-      ],
-      validation: (value) => value.length > 0,
-    },
-    {
-      label: "Compartilhe suas redes sociais (Instagram e Twitter)",
-      name: "socialMediasOfUser",
-      type: "text",
-    },
-    {
-      label: "Em quais eventos da FURIA você participou no último ano?",
-      name: "eventsParticipationsLastYear",
-      type: "text",
-    },
-    {
-      label: "Você comprou produtos oficiais da FURIA no último ano? Quais?",
-      name: "buysLastYear",
-      type: "text",
-    },
-  ];
-
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await fetch("http://127.0.0.1:5000/upload/", {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          const filterCpf = data.texto.cpf;
-          const cleanCpf = filterCpf.replace(/\D/g, "");
-          const cpfIsValid = cpf.isValid(cleanCpf) && cleanCpf === userData.cpf;
-
-          if (cpfIsValid) {
-            console.log("CPF válido:", cleanCpf);
-            setIsCpfImagemValid(true);
-            userData.cpfImage = true;
-          } else {
-            console.log("CPF inválido ou não bateu com o userData");
-          }
-        } else {
-          setIsCpfImagemValid(false);
-          console.log(data.message);
-        }
-      } catch (e) {
-        setIsCpfImagemValid(false);
-        console.log(e);
-      }
-    }
-  };
-
   const handleChange = (value, field) => {
     const updatedValues = userData[field].includes(value)
       ? userData[field].filter((item) => item !== value)
@@ -216,34 +106,12 @@ export const FormMultiSteps = () => {
     updateUserData({ [field]: updatedValues });
   };
 
-  const buscarEnderecoPorCEP = async (cepValue) => {
-    const cepLimpo = cepValue.replace(/\D/g, "");
+  const onFileChange = (e) => {
+    handleFilterTextInImage(e, userData, setIsCpfImagemValid);
+  };
 
-    if (cepLimpo.length !== 8) return;
-
-    try {
-      const response = await fetch(
-        `https://viacep.com.br/ws/${cepLimpo}/json/`
-      );
-      const data = await response.json();
-
-      if (!data.erro) {
-        updateUserData({
-          address: {
-            ...userData.address,
-            cep: cepLimpo,
-            street: data.logradouro,
-            neighborhood: data.bairro,
-            city: data.localidade,
-            state: data.uf,
-          },
-        });
-      } else {
-        setErrors((prev) => ({ ...prev, cep: "CEP não encontrado." }));
-      }
-    } catch (error) {
-      setErrors((prev) => ({ ...prev, cep: "Erro ao buscar o CEP." }));
-    }
+  const onCepBlur = (e) => {
+    buscarEnderecoPorCEP(e.target.value, userData, setErrors, updateUserData);
   };
 
   const handleNext = () => {
@@ -279,6 +147,20 @@ export const FormMultiSteps = () => {
     e.preventDefault();
     console.log(userData);
   };
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleNext();
+      }
+    };
+
+    window.addEventListener("keypress", handleKeyPress);
+    return () => {
+      window.removeEventListener("keypress", handleKeyPress);
+    };
+  }, [steps, step, userData, isCpfImagemValid, errors]);
 
   const currentStep = steps[step - 1];
 
@@ -470,168 +352,22 @@ export const FormMultiSteps = () => {
                 <input
                   type="file"
                   name="cpfImage"
-                  onChange={handleImageChange}
+                  onChange={onFileChange}
                   className="file-input"
                 />
               </div>
             ) : currentStep.name === "socialMediasOfUser" ? (
-              <div className="grid grid-rows-2">
-                <div className="flex flex-col">
-                  <label>Instagram</label>
-                  <input
-                    type="text"
-                    name="instagram"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={
-                      userData.socialMediasOfUser.instagram ||
-                      "https://instagram.com/"
-                    }
-                    placeholder="Coloque seu @ Aqui"
-                    onChange={(e) =>
-                      updateUserData({
-                        socialMediasOfUser: {
-                          ...userData.socialMediasOfUser,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <label>Twitter</label>
-                  <input
-                    type="text"
-                    name="twitter"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={
-                      userData.socialMediasOfUser.twitter || "https://x.com/"
-                    }
-                    onChange={(e) =>
-                      updateUserData({
-                        socialMediasOfUser: {
-                          ...userData.socialMediasOfUser,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                </div>
-              </div>
+              <SocialMediaUserForm
+                userData={userData}
+                updateUserData={updateUserData}
+              />
             ) : currentStep.name === "address" ? (
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <label>CEP</label>
-                  <input
-                    type="text"
-                    name="cep"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.address.cep || ""}
-                    onChange={(e) =>
-                      updateUserData({
-                        address: {
-                          ...userData.address,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                    onBlur={(e) => buscarEnderecoPorCEP(e.target.value)}
-                  />
-                  {errors.cep && <span>{errors.cep}</span>}
-                </div>
-
-                <div className="flex flex-col">
-                  <label>Bairro</label>
-                  <input
-                    type="text"
-                    name="neighborhood"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.address.neighborhood || ""}
-                    onChange={(e) =>
-                      updateUserData({
-                        address: {
-                          ...userData.address,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                  {errors.neighborhood && <span>{errors.neighborhood}</span>}
-                </div>
-
-                <div className="flex flex-col">
-                  <label>Cidade</label>
-                  <input
-                    type="text"
-                    name="city"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.address.city || ""}
-                    onChange={(e) =>
-                      updateUserData({
-                        address: {
-                          ...userData.address,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                  {errors.city && <span>{errors.city}</span>}
-                </div>
-
-                <div className="flex flex-col">
-                  <label>Estado</label>
-                  <input
-                    type="text"
-                    name="state"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.address.state || ""}
-                    onChange={(e) =>
-                      updateUserData({
-                        address: {
-                          ...userData.address,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                  {errors.state && <span>{errors.state}</span>}
-                </div>
-
-                <div className="flex flex-col">
-                  <label>Número</label>
-                  <input
-                    type="text"
-                    name="number"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.address.number || ""}
-                    onChange={(e) =>
-                      updateUserData({
-                        address: {
-                          ...userData.address,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                  {errors.number && <span>{errors.number}</span>}
-                </div>
-                <div className="flex flex-col">
-                  <label>Complemento (Opcional)</label>
-                  <input
-                    type="text"
-                    name="complement"
-                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.address.complement || ""}
-                    onChange={(e) =>
-                      updateUserData({
-                        address: {
-                          ...userData.address,
-                          [e.target.name]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                </div>
-              </div>
+              <AddressForm
+                userData={userData}
+                updateUserData={updateUserData}
+                errors={errors}
+                onCepBlur={onCepBlur}
+              />
             ) : (
               <input
                 type={currentStep.type}
@@ -674,7 +410,7 @@ export const FormMultiSteps = () => {
             </button>
           ) : (
             <button
-              type="submit"
+              type="button"
               className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
             >
               Finalizar
