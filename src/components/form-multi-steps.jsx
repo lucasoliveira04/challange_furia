@@ -8,6 +8,7 @@ export const FormMultiSteps = () => {
   const { userData, updateUserData } = useContext(UserContext);
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
+  const [isCpfImagemValid, setIsCpfImagemValid] = useState(false);
 
   const steps = [
     {
@@ -47,6 +48,11 @@ export const FormMultiSteps = () => {
       ],
       validation: (value) => value.length > 0,
     },
+    {
+      label: "Foto do CPF",
+      name: "cpfImage",
+      type: "file",
+    },
 
     {
       label: "Redes Sociais",
@@ -63,6 +69,44 @@ export const FormMultiSteps = () => {
       validation: (value) => value.length > 0,
     },
   ];
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/upload/", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const filterCpf = data.texto.cpf;
+          const cleanCpf = filterCpf.replace(/\D/g, "");
+          const cpfIsValid = cpf.isValid(cleanCpf) && cleanCpf === userData.cpf;
+
+          if (cpfIsValid) {
+            console.log("CPF válido:", cleanCpf);
+            setIsCpfImagemValid(true);
+            userData.cpfImage = true;
+          } else {
+            console.log("CPF inválido ou não bateu com o userData");
+          }
+        } else {
+          setIsCpfImagemValid(false);
+          console.log(data.message);
+        }
+      } catch (e) {
+        setIsCpfImagemValid(false);
+        console.log(e);
+      }
+    }
+  };
 
   const handleChange = (value, field) => {
     const updatedValues = userData[field].includes(value)
@@ -104,9 +148,14 @@ export const FormMultiSteps = () => {
 
   const handleNext = () => {
     const currentStep = steps[step - 1];
-    const isValid = currentStep.validation
+
+    let isValid = currentStep.validation
       ? currentStep.validation(userData[currentStep.name])
       : true;
+
+    if (currentStep.name === "cpfImage") {
+      isValid = isValid && isCpfImagemValid;
+    }
 
     if (!isValid) {
       setErrors((prevErros) => ({
@@ -169,6 +218,15 @@ export const FormMultiSteps = () => {
                   </button>
                 ))}
               </div>
+            ) : currentStep.name === "cpfImage" ? (
+              <div>
+                <input
+                  type="file"
+                  name="cpfImage"
+                  onChange={handleImageChange}
+                  className="file-input"
+                />
+              </div>
             ) : currentStep.name === "address" ? (
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
@@ -197,7 +255,7 @@ export const FormMultiSteps = () => {
                     type="text"
                     name="neighborhood"
                     className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.neighborhood || ""}
+                    value={userData.address.neighborhood || ""}
                     onChange={(e) =>
                       updateUserData({
                         address: {
@@ -216,7 +274,7 @@ export const FormMultiSteps = () => {
                     type="text"
                     name="city"
                     className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.city || ""}
+                    value={userData.address.city || ""}
                     onChange={(e) =>
                       updateUserData({
                         address: {
@@ -235,7 +293,7 @@ export const FormMultiSteps = () => {
                     type="text"
                     name="state"
                     className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
-                    value={userData.state || ""}
+                    value={userData.address.state || ""}
                     onChange={(e) =>
                       updateUserData({
                         address: {
@@ -246,6 +304,42 @@ export const FormMultiSteps = () => {
                     }
                   />
                   {errors.state && <span>{errors.state}</span>}
+                </div>
+
+                <div className="flex flex-col">
+                  <label>Número</label>
+                  <input
+                    type="text"
+                    name="number"
+                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
+                    value={userData.address.number || ""}
+                    onChange={(e) =>
+                      updateUserData({
+                        address: {
+                          ...userData.address,
+                          [e.target.name]: e.target.value,
+                        },
+                      })
+                    }
+                  />
+                  {errors.number && <span>{errors.number}</span>}
+                </div>
+                <div className="flex flex-col">
+                  <label>Complemento (Opcional)</label>
+                  <input
+                    type="text"
+                    name="complement"
+                    className="w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
+                    value={userData.address.complement || ""}
+                    onChange={(e) =>
+                      updateUserData({
+                        address: {
+                          ...userData.address,
+                          [e.target.name]: e.target.value,
+                        },
+                      })
+                    }
+                  />
                 </div>
               </div>
             ) : (

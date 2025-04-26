@@ -13,9 +13,11 @@ export const UserProvider = ({ children }) => {
       neighborhood: "",
       city: "",
       state: "",
+      number: "",
     },
     interests: "",
     socialMediasFollow: "",
+    cpfImage: "",
   });
 
   const updateUserData = (newData) => {
