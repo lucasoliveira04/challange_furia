@@ -18,6 +18,12 @@ export const UserProvider = ({ children }) => {
     interests: "",
     socialMediasFollow: "",
     cpfImage: "",
+    socialMediasOfUser: {
+      instagram: "",
+      twitter: "",
+    },
+    buysLastYear: [],
+    eventsParticipationsLastYear: [],
   });
 
   const updateUserData = (newData) => {
