@@ -15,6 +15,7 @@ export const UserProvider = ({ children }) => {
       state: "",
       number: "",
     },
+    timeFan: 0,
     interests: "",
     socialMediasFollow: "",
     cpfImage: "",
