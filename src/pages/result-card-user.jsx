@@ -70,6 +70,22 @@ export const ResultCardUser = () => {
               Torcedor FURIA
             </h2>
             <p className="text-sm text-gray-400 mt-2">Tipo de Fã: {typeFan}</p>
+            <p className="text-white">
+              <span className="font-semibold text-xl">Instagram:</span>
+              <span className="ml-2 text-blue-500">
+                {userData.socialMediasOfUser.instagram
+                  ? userData.socialMediasOfUser.instagram.split("/").pop()
+                  : "Não informado"}
+              </span>
+            </p>
+            <p className="text-white">
+              <span className="font-semibold text-xl">X:</span>
+              <span className="ml-2 text-blue-500">
+                {userData.socialMediasOfUser.twitter
+                  ? userData.socialMediasOfUser.twitter.split("/").pop()
+                  : "Não informado"}
+              </span>
+            </p>
           </div>
 
           <img src={logo} alt="Logo FURIA" width={90} className="mb-6" />
