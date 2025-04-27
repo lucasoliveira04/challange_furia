@@ -7,6 +7,8 @@ import { handleFilterTextInImage } from "../services/filter-text-image";
 import { AddressForm } from "./address-form";
 import { SocialMediaUserForm } from "./social-media-form-user";
 import { useNavigate } from "react-router";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../services/firebase";
 
 export const FormMultiSteps = () => {
   const { userData, updateUserData } = useContext(UserContext);
@@ -142,15 +144,21 @@ export const FormMultiSteps = () => {
     }
   };
 
-  const handlePrevious = () => {
+  const handlePrevious = async (e) => {
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    navigate("/result-card-user");
-    console.log(userData);
+    try {
+      const docRef = await addDoc(collection(db, "data"), userData);
+      localStorage.setItem("userData", JSON.stringify(userData));
+      console.log("Documento adicionado com ID: ", docRef.id);
+      navigate("/result-card-user");
+    } catch (error) {
+      console.error("Erro ao adicionar documento: ", error);
+    }
   };
 
   useEffect(() => {
@@ -185,7 +193,14 @@ export const FormMultiSteps = () => {
               htmlFor={currentStep.name}
               className="block text-3xl font-bold text-black mb-2"
             >
-              {currentStep.label}
+              {currentStep.label.split("<br/>").map((part, index) => (
+                <span key={index}>
+                  {part}
+                  {index < currentStep.label.split("<br/>").length - 1 && (
+                    <br />
+                  )}
+                </span>
+              ))}
             </label>
 
             {currentStep.type === "button" ? (
