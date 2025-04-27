@@ -34,6 +34,10 @@ export const steps = [
     type: "text",
   },
   {
+    label: "Há quanto tempo você é torcedor da FURIA?",
+    name: "timeFan",
+  },
+  {
     label: "Em quais jogos da FURIA você mais torce?",
     name: "interests",
     type: "button",
