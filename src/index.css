@@ -11,3 +11,50 @@ body {
   padding: 0%;
   box-sizing: border-box;
 }
+
+@keyframes customPulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 15px #facc15;
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 25px #facc15;
+  }
+}
+
+@keyframes customBounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-customPulse {
+  animation: customPulse 2s infinite;
+}
+
+.animate-customBounce {
+  animation: customBounce 1s ease-in-out infinite;
+}
+
+.border-fanatico {
+  border: 4px solid #facc15;
+  animation: customPulse 2s infinite;
+}
+
+.border-apaixonado {
+  border: 2px solid #9b4e97;
+  animation: customBounce 1s ease-in-out infinite;
+}
+
+.border-iniciante {
+  border: 2px solid #a1a1a1;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
