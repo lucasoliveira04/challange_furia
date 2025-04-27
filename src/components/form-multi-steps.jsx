@@ -6,6 +6,7 @@ import { buscarEnderecoPorCEP } from "../services/cep-services";
 import { handleFilterTextInImage } from "../services/filter-text-image";
 import { AddressForm } from "./address-form";
 import { SocialMediaUserForm } from "./social-media-form-user";
+import { useNavigate } from "react-router";
 
 export const FormMultiSteps = () => {
   const { userData, updateUserData } = useContext(UserContext);
@@ -21,6 +22,8 @@ export const FormMultiSteps = () => {
       typeProduct: "",
     },
   ]);
+
+  const navigate = useNavigate();
 
   const handleInputProductChange = (index, field, value) => {
     const newInputs = [...buysLastYear];
@@ -145,6 +148,8 @@ export const FormMultiSteps = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    navigate("/result-card-user");
     console.log(userData);
   };
 
@@ -199,6 +204,28 @@ export const FormMultiSteps = () => {
                     {option}
                   </button>
                 ))}
+              </div>
+            ) : currentStep.name === "timeFan" ? (
+              <div className="flex flex-col items-center">
+                <select
+                  name="timeFan"
+                  id="timeFan"
+                  value={userData.timeFan}
+                  onChange={(e) => updateUserData({ timeFan: e.target.value })}
+                  className="w-[300px] sm:w-[400px] md:w-[500px] h-[50px] px-4 py-2 border border-black rounded-lg text-black bg-white placeholder-black focus:outline-none focus:ring-2 focus:ring-black"
+                >
+                  <option value="" disabled>
+                    Selecione...
+                  </option>
+                  <option value="1">1 Ano</option>
+                  <option value="2">2 Anos</option>
+                  <option value="3">3 Anos</option>
+                  <option value="4">4 Anos</option>
+                  <option value="5">5 Anos</option>
+                  <option value="6">6 Anos</option>
+                  <option value="7">7 Anos</option>
+                  <option value="8">8 Anos</option>
+                </select>
               </div>
             ) : currentStep.name === "buysLastYear" ? (
               <div className="grid grid-cols-1 grid-rows-2 gap-4 mt-4">
@@ -411,6 +438,7 @@ export const FormMultiSteps = () => {
           ) : (
             <button
               type="button"
+              onClick={handleSubmit}
               className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
             >
               Finalizar
