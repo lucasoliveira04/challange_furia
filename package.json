@@ -14,7 +14,9 @@
     "axios": "^1.9.0",
     "cpf-cnpj-validator": "^1.0.3",
     "dom": "^0.0.3",
+    "firebase": "^11.6.1",
     "framer-motion": "^12.9.2",
+    "playwright": "^1.52.0",
     "react": "^19.1.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.5.2",
@@ -22,7 +24,9 @@
     "router": "^2.2.0",
     "tailwindcss": "^4.1.4",
     "tesseract.js": "^4.1.1",
-    "validator": "^13.15.0"
+    "twitter-api-v2": "^1.22.0",
+    "validator": "^13.15.0",
+    "vite-plugin-node-polyfills": "^0.23.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
