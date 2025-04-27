@@ -1,11 +1,17 @@
-import { useContext, useEffect, useState } from "react";
-import UserContext from "../context/UserContext";
+import { useEffect, useState } from "react";
 import logo from "../../public/imgs/home/logo.png";
 
 export const ResultCardUser = () => {
-  const { userData } = useContext(UserContext);
+  const [userData, setUserData] = useState(null);
   const [typeFan, setTypeFan] = useState("");
   const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    const userDataString = localStorage.getItem("userData");
+    if (userDataString) {
+      setUserData(JSON.parse(userDataString));
+    }
+  }, []);
 
   useEffect(() => {
     if (userData) {
@@ -50,6 +56,10 @@ export const ResultCardUser = () => {
       setTypeFan("Iniciante");
     }
   };
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6">
