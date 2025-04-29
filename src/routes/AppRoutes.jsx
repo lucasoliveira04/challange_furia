@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { HomePage } from "../pages/home";
 import { UserPage } from "../pages/user-page";
 import { ResultCardUser } from "../pages/result-card-user";
+import { SocialMedias } from "../pages/social-medias";
+import { DashboardAdmin } from "../pages/dashboard-admin";
 
 export const AppRoutes = () => {
   return (
@@ -10,6 +12,7 @@ export const AppRoutes = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/form" element={<UserPage />} />
         <Route path="/result-card-user" element={<ResultCardUser />} />
+        <Route path="/furia/dash" element={<DashboardAdmin />} />
 
         <Route path="*" element={<HomePage />} />
       </Routes>
