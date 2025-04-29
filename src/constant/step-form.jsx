@@ -10,28 +10,32 @@ export const steps = [
     name: "name",
     type: "text",
     validation: validateName,
+    placeholder: "Seu nome aqui",
   },
   {
     label: "Qual seu melhor e-mail?",
     name: "email",
     type: "email",
     validation: (value) => validateEmail,
+    placeholder: "Seu e-mail aqui",
   },
   {
     label: "Informe seu CPF",
     name: "cpf",
     type: "text",
     validation: (value) => validateCPF,
+    placeholder: "Seu CPF aqui",
   },
-  {
-    label: "Envie uma foto do seu CPF",
-    name: "cpfImage",
-    type: "file",
-  },
+  // {
+  //   label: "Envie uma foto do seu CPF",
+  //   name: "cpfImage",
+  //   type: "file",
+  // },
   {
     label: "Qual seu endereço completo?",
     name: "address",
     type: "text",
+    placeholder: "Seu endereço aqui",
   },
   {
     label: "Há quanto tempo você é torcedor da FURIA?",
@@ -66,6 +70,7 @@ export const steps = [
     ],
     validation: (value) => value.length > 0,
   },
+
   {
     label: "Compartilhe suas redes sociais (Instagram e Twitter)",
     name: "socialMediasOfUser",
