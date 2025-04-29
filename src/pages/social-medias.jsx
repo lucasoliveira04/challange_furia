@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import UserContext from "../context/UserContext";
+import { useEffect, useState } from "react";
 import { FilterDataX } from "../services/filter-data-x";
 
 export const SocialMedias = () => {
@@ -26,7 +25,7 @@ export const SocialMedias = () => {
 
           const data = await FilterDataX({
             username: usernameX,
-            qntdFollowing: 10,
+            qntdFollowing: 500,
             onProgress: (progress) => setLoadingProgress(progress),
           });
           setFollowersData(data);

@@ -11,7 +11,8 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 
 export const FormMultiSteps = () => {
-  const { userData, updateUserData } = useContext(UserContext);
+  const { userData, updateUserData, socialMedias, setSocialMedias } =
+    useContext(UserContext);
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [isCpfImagemValid, setIsCpfImagemValid] = useState(false);
@@ -416,6 +417,7 @@ export const FormMultiSteps = () => {
                 id={currentStep.name}
                 name={currentStep.name}
                 value={userData[currentStep.name]}
+                placeholder={currentStep.placeholder}
                 onChange={(e) =>
                   updateUserData({ [e.target.name]: e.target.value })
                 }

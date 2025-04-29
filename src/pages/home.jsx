@@ -23,7 +23,7 @@ export const HomePage = () => {
 
       <div className="absolute bottom-16 left-0 right-0 flex justify-center z-20">
         <Link to="/form">
-          <button className="px-8 py-3 bg-white text-black font-semibold text-lg rounded-full hover:bg-zinc-300 transition duration-300 shadow-xl">
+          <button className="px-8 py-3 bg-white text-black font-semibold text-lg rounded-full hover:bg-zinc-300 transition duration-300 shadow-xl cursor-pointer">
             Criar Perfil de Fã
           </button>
         </Link>
