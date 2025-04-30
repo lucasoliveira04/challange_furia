@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logo from "../../public/imgs/home/logo.png";
+import html2canvas from "html2canvas";
 
 export const ResultCardUser = () => {
   const [userData, setUserData] = useState(null);
@@ -83,7 +84,7 @@ export const ResultCardUser = () => {
             <p className="text-white">
               <span className="font-semibold text-xl">Instagram:</span>
               <span className="ml-2 text-blue-500">
-                {userData.socialMediasOfUser.instagram
+                {userData.socialMediasOfUser?.instagram
                   ? userData.socialMediasOfUser.instagram.split("/").pop()
                   : "Não informado"}
               </span>
@@ -91,7 +92,7 @@ export const ResultCardUser = () => {
             <p className="text-white">
               <span className="font-semibold text-xl">X:</span>
               <span className="ml-2 text-blue-500">
-                {userData.socialMediasOfUser.twitter
+                {userData.socialMediasOfUser?.twitter
                   ? userData.socialMediasOfUser.twitter.split("/").pop()
                   : "Não informado"}
               </span>
@@ -101,17 +102,16 @@ export const ResultCardUser = () => {
           <img src={logo} alt="Logo FURIA" width={90} className="mb-6" />
         </div>
 
-        {/* Info do usuário */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-gray-100 mt-10">
           <div className="space-y-6">
             <Info label="Nome" value={userData.name || "Não informado"} />
             <Info
               label="Estado"
-              value={userData.address.state || "Não informado"}
+              value={userData.address?.state || "Não informado"}
             />
             <Info
               label="Cidade"
-              value={userData.address.city || "Não informado"}
+              value={userData.address?.city || "Não informado"}
             />
             <Info
               label="Tempo de Torcedor"
