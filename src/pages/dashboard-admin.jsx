@@ -3,6 +3,7 @@ import { db } from "../services/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { FanBarChart } from "../components/bar-chart";
 import { SocialMediaPieChart } from "../components/pie-char";
+import * as XLSX from "xlsx";
 
 export const DashboardAdmin = () => {
   const [data, setData] = useState([]);
@@ -98,11 +99,48 @@ export const DashboardAdmin = () => {
     );
   }
 
+  const generateXLSX = () => {
+    if (data.length === 0) return;
+
+    const workSheet = XLSX.utils.json_to_sheet(data);
+
+    const workBook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workBook, workSheet, "data");
+
+    XLSX.writeFile(workBook, "data.xlsx");
+  };
+
+  console.log("Dados:", data);
+
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gray-100">
-      <h1 className="font-bold mb-6 font-winky text-4xl">
-        Dashboard de Usuários
-      </h1>
+      <div className="flex flex-row justify-center mb-6">
+        <h1 className="font-sigmar mb-6 text-4xl">Dashboard de Usuários</h1>
+
+        <div className="flex">
+          <button
+            onClick={generateXLSX}
+            className="ml-6 flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-green-500 to-green-700 text-white shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 4v16h16M4 4l8 8m0 0l8-8M12 12v8"
+              />
+            </svg>
+            Gerar Excel
+          </button>
+        </div>
+      </div>
 
       <div className="flex flex-col w-full max-w-screen-xl">
         {/* Cards */}
