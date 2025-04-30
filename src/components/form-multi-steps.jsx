@@ -11,8 +11,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 
 export const FormMultiSteps = () => {
-  const { userData, updateUserData, socialMedias, setSocialMedias } =
-    useContext(UserContext);
+  const { userData, updateUserData } = useContext(UserContext);
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [isCpfImagemValid, setIsCpfImagemValid] = useState(false);
@@ -149,19 +148,6 @@ export const FormMultiSteps = () => {
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const docRef = await addDoc(collection(db, "data"), userData);
-      localStorage.setItem("userData", JSON.stringify(userData));
-      console.log("Documento adicionado com ID: ", docRef.id);
-      navigate("/result-card-user");
-    } catch (error) {
-      console.error("Erro ao adicionar documento: ", error);
-    }
-  };
-
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === "Enter") {
@@ -180,7 +166,7 @@ export const FormMultiSteps = () => {
 
   return (
     <div className="flex justify-center place-items-center w-full h-screen mx-auto bg-white p-6 rounded-lg shadow-md">
-      <form onSubmit={handleSubmit}>
+      <form>
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -455,7 +441,7 @@ export const FormMultiSteps = () => {
           ) : (
             <button
               type="button"
-              onClick={handleSubmit}
+              onClick={(e) => navigate("/loading")}
               className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
             >
               Finalizar
