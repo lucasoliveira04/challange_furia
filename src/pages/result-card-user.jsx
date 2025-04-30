@@ -47,6 +47,10 @@ export const ResultCardUser = () => {
       totalPoints += userData.buysLastYear.length * 2.5;
     }
 
+    if (userData.isEngajamented) {
+      totalPoints += 5;
+    }
+
     setPoints(totalPoints);
 
     if (totalPoints >= 30) {
@@ -81,6 +85,11 @@ export const ResultCardUser = () => {
               Torcedor FURIA
             </h2>
             <p className="text-sm text-gray-400 mt-2">Tipo de Fã: {typeFan}</p>
+            {userData.isEngajamented && (
+              <p className="text-sm text-gray-400 mt-2">
+                Você é um torcedor engajado!
+              </p>
+            )}
             <p className="text-white">
               <span className="font-semibold text-xl">Instagram:</span>
               <span className="ml-2 text-blue-500">

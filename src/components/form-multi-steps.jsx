@@ -9,6 +9,7 @@ import { SocialMediaUserForm } from "./social-media-form-user";
 import { useNavigate } from "react-router";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
+import { Alert } from "./alert-message";
 
 export const FormMultiSteps = () => {
   const { userData, updateUserData } = useContext(UserContext);
@@ -16,6 +17,8 @@ export const FormMultiSteps = () => {
   const [errors, setErrors] = useState({});
   const [isCpfImagemValid, setIsCpfImagemValid] = useState(false);
   const [eventInputs, setEventInputs] = useState([{ name: "", date: "" }]);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
   const [buysLastYear, setBuysLastYear] = useState([
     {
       name: "",
@@ -27,6 +30,14 @@ export const FormMultiSteps = () => {
 
   const navigate = useNavigate();
 
+  const showAlert = (msg, type = "success") => {
+    setAlertMessage(msg);
+    setAlertType(type);
+    setTimeout(() => {
+      setAlertMessage("");
+    }, 3000);
+  };
+
   const handleInputProductChange = (index, field, value) => {
     const newInputs = [...buysLastYear];
     newInputs[index][field] = value;
@@ -37,7 +48,10 @@ export const FormMultiSteps = () => {
     const lastProduct = buysLastYear[buysLastYear.length - 1];
 
     if (!lastProduct.name || !lastProduct.date) {
-      alert("Preencha o nome e a data do evento antes de adicionar um novo.");
+      showAlert(
+        "Preencha o nome e a data do evento antes de adicionar um novo.",
+        "error"
+      );
       return;
     }
 
@@ -47,7 +61,7 @@ export const FormMultiSteps = () => {
     oneYearAgo.setFullYear(today.getFullYear() - 1);
 
     if (productDate < oneYearAgo) {
-      alert("A data do evento deve ser dentro do último ano.");
+      showAlert("A data do evento deve ser dentro do último ano.", "error");
       return;
     }
 
@@ -57,12 +71,14 @@ export const FormMultiSteps = () => {
   const handleRemoveProduct = (index) => {
     const updateProduct = buysLastYear.filter((_, i) => i !== index);
     setBuysLastYear(updateProduct);
+    showAlert("Produto removido com sucesso.", "warning");
   };
 
   const handleSaveProduct = () => {
     updateUserData({
       buysLastYear: buysLastYear,
     });
+    showAlert("Produtos salvos com sucesso.");
   };
 
   const handleInputEventChange = (index, field, value) => {
@@ -75,7 +91,10 @@ export const FormMultiSteps = () => {
     const lastEvent = eventInputs[eventInputs.length - 1];
 
     if (!lastEvent.name || !lastEvent.date) {
-      alert("Preencha o nome e a data do evento antes de adicionar um novo.");
+      showAlert(
+        "Preencha o nome e a data do evento antes de adicionar um novo.",
+        "error"
+      );
       return;
     }
 
@@ -85,7 +104,7 @@ export const FormMultiSteps = () => {
     oneYearAgo.setFullYear(today.getFullYear() - 1);
 
     if (eventDate < oneYearAgo) {
-      alert("A data do evento deve ser dentro do último ano.");
+      showAlert("A data do evento deve ser dentro do último ano.", "error");
       return;
     }
 
@@ -95,12 +114,14 @@ export const FormMultiSteps = () => {
   const handleRemoveEvent = (index) => {
     const updateEvents = eventInputs.filter((_, i) => i !== index);
     setEventInputs(updateEvents);
+    showAlert("Evento removido com sucesso.", "warning");
   };
 
   const handleSaveEvent = () => {
     updateUserData({
       eventsParticipationsLastYear: eventInputs,
     });
+    showAlert("Eventos salvos com sucesso.");
   };
 
   const handleChange = (value, field) => {
@@ -166,6 +187,11 @@ export const FormMultiSteps = () => {
 
   return (
     <div className="flex justify-center place-items-center w-full h-screen mx-auto bg-white p-6 rounded-lg shadow-md">
+      <Alert
+        message={alertMessage}
+        type={alertType}
+        onClose={() => setAlertMessage("")}
+      />
       <form>
         <AnimatePresence mode="wait">
           <motion.div

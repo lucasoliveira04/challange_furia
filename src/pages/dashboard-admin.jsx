@@ -61,6 +61,11 @@ export const DashboardAdmin = () => {
     return estadoMaisSeguido;
   }, [data]);
 
+  const quantidadeDePessoasEngajadas = useMemo(() => {
+    if (data.length === 0) return 0;
+    return data.filter((usuario) => usuario.isEngajamented).length;
+  });
+
   const cardObject = [
     { title: "Total de Pessoas", description: data.length },
     { title: "Média de tempo como fã", description: mediaTempoFa },
@@ -72,6 +77,10 @@ export const DashboardAdmin = () => {
     {
       title: "Estado Predominante",
       description: estadoPredominante || "Nenhum",
+    },
+    {
+      title: "Pessoas engajadas nas redes sociais",
+      description: quantidadeDePessoasEngajadas,
     },
   ];
 
@@ -103,12 +112,10 @@ export const DashboardAdmin = () => {
     XLSX.writeFile(workBook, "data.xlsx");
   };
 
-  console.log("Dados:", data);
-
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gray-100">
       <div className="flex flex-row justify-center mb-6">
-        <h1 className="font-sigmar mb-6 text-4xl">Dashboard de Usuários</h1>
+        <h1 className="font-sigmar mb-6 text-4xl">Dashboard</h1>
 
         <div className="flex">
           <button
