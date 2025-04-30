@@ -103,7 +103,27 @@ export const DashboardAdmin = () => {
   const generateXLSX = () => {
     if (data.length === 0) return;
 
-    const workSheet = XLSX.utils.json_to_sheet(data);
+    const flattenData = data.map((usuario) => ({
+      ID: usuario.id,
+      Nome: usuario.name,
+      Email: usuario.email,
+      CPF: usuario.cpf,
+      TempoComoFã: usuario.timeFan,
+      Engajado: usuario.isEngajamented ? "Sim" : "Não",
+      Estado: usuario.address?.state || "",
+      Cidade: usuario.address?.city || "",
+      Rua: usuario.address?.street || "",
+      Número: usuario.address?.number || "",
+      Bairro: usuario.address?.neighborhood || "",
+      CEP: usuario.address?.cep || "",
+      RedesSeguidas: usuario.socialMediasFollow?.join(", ") || "",
+      EventosParticipados: usuario.eventsParticipationsLastYear?.length || 0,
+      Interesses: usuario.interests?.join(", ") || "",
+      Instagram: usuario.socialMediasOfUser?.instagram || "",
+      Twitter: usuario.socialMediasOfUser?.twitter || "",
+    }));
+
+    const workSheet = XLSX.utils.json_to_sheet(flattenData);
 
     const workBook = XLSX.utils.book_new();
 
