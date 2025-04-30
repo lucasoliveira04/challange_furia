@@ -68,10 +68,10 @@ export const DashboardAdmin = () => {
       title: "Média de participantes por evento",
       description: mediaEventosPorPessoa,
     },
-    { title: "Rede mais seguida", description: redeMaisSeguida },
+    { title: "Rede mais seguida", description: redeMaisSeguida || "Nenhuma" },
     {
       title: "Estado Predominante",
-      description: estadoPredominante || "Não disponível",
+      description: estadoPredominante || "Nenhum",
     },
   ];
 
@@ -90,14 +90,6 @@ export const DashboardAdmin = () => {
     };
     fetchData();
   }, []);
-
-  if (data.length === 0) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Carregando...
-      </div>
-    );
-  }
 
   const generateXLSX = () => {
     if (data.length === 0) return;
