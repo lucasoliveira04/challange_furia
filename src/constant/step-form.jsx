@@ -26,11 +26,11 @@ export const steps = [
     validation: (value) => validateCPF,
     placeholder: "Seu CPF aqui",
   },
-  // {
-  //   label: "Envie uma foto do seu CPF",
-  //   name: "cpfImage",
-  //   type: "file",
-  // },
+  {
+    label: "Envie uma foto do seu CPF",
+    name: "cpfImage",
+    type: "file",
+  },
   {
     label: "Qual seu endereço completo?",
     name: "address",
