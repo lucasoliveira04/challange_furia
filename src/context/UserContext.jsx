@@ -25,7 +25,7 @@ export const UserProvider = ({ children }) => {
     },
     buysLastYear: [],
     eventsParticipationsLastYear: [],
-    isEngajada: false,
+    isEngajamented: false,
   });
 
   const updateUserData = (newData) => {
