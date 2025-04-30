@@ -16,6 +16,7 @@
     "dom": "^0.0.3",
     "firebase": "^11.6.1",
     "framer-motion": "^12.9.2",
+    "html2canvas": "^1.4.1",
     "playwright": "^1.52.0",
     "react": "^19.1.0",
     "react-dom": "^19.0.0",
