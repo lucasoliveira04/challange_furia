@@ -13,7 +13,6 @@ export const HomePage = () => {
       await StartApiFilterDatas();
     };
     activateAPIS();
-    console.log("APIs started");
   }, []);
 
   return (
