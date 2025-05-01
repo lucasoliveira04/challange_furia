@@ -1,5 +1,9 @@
 import { useEffect } from "react";
 import { FormMultiSteps } from "../components/form-multi-steps";
+import {
+  StartApiFilterCpfImage,
+  StartApiFilterDatas,
+} from "../services/start-apis";
 
 export const UserPage = () => {
   useEffect(() => {
@@ -8,14 +12,6 @@ export const UserPage = () => {
       await StartApiFilterDatas();
     };
     activateAPIS();
-
-    const intervalId = setInterval(() => {
-      activateAPIS();
-    }, 3000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
   }, []);
 
   return (

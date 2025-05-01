@@ -13,10 +13,13 @@ export const handleFilterTextInImage = async (
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${API_ENDPOINTS.filterCpfImage}/upload/`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `https://api-filter-text-images.onrender.com/upload/`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 
