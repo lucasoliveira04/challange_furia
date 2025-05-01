@@ -1,6 +1,8 @@
+import API_ENDPOINTS from "../constant/endpoints";
+
 export const FilterDataProfileX = async (username) => {
   const response = await fetch(
-    `http://localhost:3000/x/api/scraper/profile/${username}`,
+    `${API_ENDPOINTS.filterDatas}/x/api/scraper/profile/${username}`,
     {
       method: "GET",
       headers: {
@@ -19,7 +21,7 @@ export const FilterDataProfileX = async (username) => {
 
 export const FilterDataFollowersX = async (username, qntdFollowers) => {
   const response = await fetch(
-    `http://localhost:3000/x/api/scraper/followers/${username}/${qntdFollowers}`,
+    `${API_ENDPOINTS.filterDatas}/x/api/scraper/followers/${username}/${qntdFollowers}`,
     {
       method: "GET",
       headers: {
