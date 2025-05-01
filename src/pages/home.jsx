@@ -1,7 +1,21 @@
+import { useEffect } from "react";
 import furiaLogo from "../../public/imgs/home/furiaLogo.webp";
 import { Link } from "react-router";
+import {
+  StartApiFilterCpfImage,
+  StartApiFilterDatas,
+} from "../services/start-apis";
 
 export const HomePage = () => {
+  useEffect(() => {
+    const activateAPIS = async () => {
+      await StartApiFilterCpfImage();
+      await StartApiFilterDatas();
+    };
+    activateAPIS();
+    console.log("APIs started");
+  }, []);
+
   return (
     <div className="relative bg-zinc-200 w-full h-screen overflow-hidden">
       <div className="w-full h-[600px]">
