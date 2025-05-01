@@ -1,4 +1,5 @@
 import { cpf } from "cpf-cnpj-validator";
+import API_ENDPOINTS from "../constant/endpoints";
 
 export const handleFilterTextInImage = async (
   e,
@@ -12,7 +13,7 @@ export const handleFilterTextInImage = async (
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/upload/", {
+      const response = await fetch(`${API_ENDPOINTS.filterCpfImage}/upload/`, {
         method: "POST",
         body: formData,
       });
