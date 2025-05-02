@@ -1,15 +1,11 @@
 import { useEffect } from "react";
 import furiaLogo from "../../public/imgs/home/furiaLogo.webp";
 import { Link } from "react-router";
-import {
-  StartApiFilterCpfImage,
-  StartApiFilterDatas,
-} from "../services/start-apis";
+import { StartApiFilterDatas } from "../services/start-apis";
 
 export const HomePage = () => {
   useEffect(() => {
     const activateAPIS = async () => {
-      await StartApiFilterCpfImage();
       await StartApiFilterDatas();
     };
     activateAPIS();

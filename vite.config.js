@@ -16,11 +16,6 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
-      "/api-filter-text-images": {
-        target: "https://api-filter-text-images.onrender.com",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api-filter-text-images/, ""),
-      },
     },
   },
 });

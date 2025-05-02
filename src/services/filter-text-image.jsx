@@ -13,18 +13,20 @@ export const handleFilterTextInImage = async (
     formData.append("file", file);
 
     try {
-      const response = await fetch(
-        `https://api-filter-text-images.onrender.com/upload/`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:5000/verificar-cpf`, {
+        method: "POST",
+        body: formData,
+      });
 
       const data = await response.json();
 
       if (response.ok) {
-        const filterCpf = data.texto.cpf;
+        const filterCpf = data.cpf_encontrado;
+
+        if (!filterCpf) {
+          console.log("Nenhum CPF encontrado na imagem.");
+        }
+
         const cleanCpf = filterCpf.replace(/\D/g, "");
         const cpfIsValid = cpf.isValid(cleanCpf) && cleanCpf === userData.cpf;
 
