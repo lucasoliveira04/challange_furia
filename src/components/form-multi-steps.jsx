@@ -7,8 +7,6 @@ import { handleFilterTextInImage } from "../services/filter-text-image";
 import { AddressForm } from "./address-form";
 import { SocialMediaUserForm } from "./social-media-form-user";
 import { useNavigate } from "react-router";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../services/firebase";
 import { Alert } from "./alert-message";
 
 export const FormMultiSteps = () => {
@@ -42,6 +40,23 @@ export const FormMultiSteps = () => {
     const newInputs = [...buysLastYear];
     newInputs[index][field] = value;
     setBuysLastYear(newInputs);
+  };
+
+  const handleDataChangeProduct = (e, index) => {
+    const inputDate = new Date(e.target.value);
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    inputDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    oneYearAgo.setHours(0, 0, 0, 0);
+
+    if (inputDate >= oneYearAgo && inputDate <= today) {
+      handleInputProductChange(index, "data", e.target.value);
+    } else {
+      showAlert("Por favor, selecione uma data dentro do último ano.", "error");
+    }
   };
 
   const handleAddProductInput = () => {
@@ -85,6 +100,23 @@ export const FormMultiSteps = () => {
     const newInputs = [...eventInputs];
     newInputs[index][field] = value;
     setEventInputs(newInputs);
+  };
+
+  const handleDataChangeEvent = (e, index) => {
+    const inputDate = new Date(e.target.value);
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    inputDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    oneYearAgo.setHours(0, 0, 0, 0);
+
+    if (inputDate >= oneYearAgo && inputDate <= today) {
+      handleInputEventChange(index, "data", e.target.value);
+    } else {
+      showAlert("Por favor, selecione uma data dentro do último ano.", "error");
+    }
   };
 
   const handleAddEventInput = () => {
@@ -184,6 +216,18 @@ export const FormMultiSteps = () => {
   }, [steps, step, userData, isCpfImagemValid, errors]);
 
   const currentStep = steps[step - 1];
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+
+  const getOneYearAgoDate = () => {
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+    return oneYearAgo.toISOString().split("T")[0];
+  };
 
   return (
     <div className="flex justify-center place-items-center w-full h-screen mx-auto bg-white p-6 rounded-lg shadow-md">
@@ -293,13 +337,9 @@ export const FormMultiSteps = () => {
                         type="date"
                         className="w-[200px] h-[40px] px-2 py-1 border border-black rounded-lg text-black bg-white focus:outline-none focus:ring-2 focus:ring-black"
                         value={product.date}
-                        onChange={(e) =>
-                          handleInputProductChange(
-                            index,
-                            "date",
-                            e.target.value
-                          )
-                        }
+                        onChange={(e) => handleDataChangeProduct(e, index)}
+                        min={getOneYearAgoDate()}
+                        max={getTodayDate()}
                       />
 
                       <select
@@ -368,9 +408,9 @@ export const FormMultiSteps = () => {
                       placeholder="Data do Evento"
                       className="w-[200px] h-[40px] px-2 py-1 border border-black rounded-lg text-black bg-white focus:outline-none focus:ring-2 focus:ring-black"
                       value={event.date}
-                      onChange={(e) =>
-                        handleInputEventChange(index, "date", e.target.value)
-                      }
+                      onChange={(e) => handleDataChangeEvent(e, index)}
+                      min={getOneYearAgoDate()}
+                      max={getTodayDate()}
                     />
 
                     <button
