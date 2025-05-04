@@ -96,7 +96,7 @@ npm run dev
 
 Para acessar a documentação detalhada das APIs, clique no link abaixo:
 
-[API De Filtragram de CPF usando OCR](https://github.com/lucasoliveira04/api-easyocr.git)
+[API De Filtragram de CPF usando OCR](https://github.com/lucasoliveira04/api-filter-text-images.git)
 
 [API de WebScraping](https://github.com/lucasoliveira04/api-scrapping.git)
 
