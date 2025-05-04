@@ -46,11 +46,11 @@ export const steps = [
     name: "interests",
     type: "button",
     options: [
-      "Free Fire",
       "Pubg",
       "Valorant",
       "Rocket League",
       "Apex Legends",
+      "Rainbow Six",
       "CS GO",
       "Kings League",
       "League of Legends",

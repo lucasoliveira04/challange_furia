@@ -15,6 +15,7 @@ export const FormMultiSteps = () => {
   const [errors, setErrors] = useState({});
   const [isCpfImagemValid, setIsCpfImagemValid] = useState(false);
   const [eventInputs, setEventInputs] = useState([{ name: "", date: "" }]);
+  const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("success");
   const [buysLastYear, setBuysLastYear] = useState([
@@ -53,7 +54,7 @@ export const FormMultiSteps = () => {
     oneYearAgo.setHours(0, 0, 0, 0);
 
     if (inputDate >= oneYearAgo && inputDate <= today) {
-      handleInputProductChange(index, "data", e.target.value);
+      handleInputProductChange(index, "date", e.target.value);
     } else {
       showAlert("Por favor, selecione uma data dentro do último ano.", "error");
     }
@@ -113,7 +114,7 @@ export const FormMultiSteps = () => {
     oneYearAgo.setHours(0, 0, 0, 0);
 
     if (inputDate >= oneYearAgo && inputDate <= today) {
-      handleInputEventChange(index, "data", e.target.value);
+      handleInputEventChange(index, "date", e.target.value);
     } else {
       showAlert("Por favor, selecione uma data dentro do último ano.", "error");
     }
@@ -165,7 +166,7 @@ export const FormMultiSteps = () => {
   };
 
   const onFileChange = (e) => {
-    handleFilterTextInImage(e, userData, setIsCpfImagemValid);
+    handleFilterTextInImage(e, userData, setIsCpfImagemValid, setLoading);
   };
 
   const onCepBlur = (e) => {
@@ -443,12 +444,17 @@ export const FormMultiSteps = () => {
                 </div>
               </div>
             ) : currentStep.name === "cpfImage" ? (
-              <div>
+              <div className="flex flex-col items-center justify-center p-4">
+                {loading && (
+                  <p className="text-gray-600 font-medium mb-4 animate-pulse">
+                    Carregando...
+                  </p>
+                )}
                 <input
                   type="file"
                   name="cpfImage"
                   onChange={onFileChange}
-                  className="file-input"
+                  className="file-input p-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             ) : currentStep.name === "socialMediasOfUser" ? (
@@ -499,8 +505,13 @@ export const FormMultiSteps = () => {
           {step < steps.length ? (
             <button
               type="button"
+              disabled={currentStep.name === "cpfImage" && loading}
               onClick={handleNext}
-              className="ml-auto px-4 py-2 border border-black text-black bg-white rounded-md hover:bg-black hover:text-white transition-colors"
+              className={`ml-auto px-4 py-2 border border-black text-black bg-white rounded-md hover:bg-black hover:text-white transition-colors ${
+                currentStep.name === "cpfImage" && loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-black"
+              } text-black`}
             >
               Próximo
             </button>

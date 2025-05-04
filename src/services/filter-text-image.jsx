@@ -4,11 +4,14 @@ import API_ENDPOINTS from "../constant/endpoints";
 export const handleFilterTextInImage = async (
   e,
   userData,
-  setIsCpfImagemValid
+  setIsCpfImagemValid,
+  setLoading
 ) => {
   const file = e.target.files[0];
 
   if (file) {
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -23,19 +26,14 @@ export const handleFilterTextInImage = async (
       if (response.ok) {
         const filterCpf = data.cpf_encontrado;
 
-        if (!filterCpf) {
-          console.log("Nenhum CPF encontrado na imagem.");
-        }
-
         const cleanCpf = filterCpf.replace(/\D/g, "");
         const cpfIsValid = cpf.isValid(cleanCpf) && cleanCpf === userData.cpf;
 
         if (cpfIsValid) {
-          console.log("CPF válido:", cleanCpf);
           setIsCpfImagemValid(true);
           userData.cpfImage = true;
         } else {
-          console.log("CPF inválido ou não bateu com o userData");
+          setIsCpfImagemValid(false);
         }
       } else {
         setIsCpfImagemValid(false);
@@ -44,6 +42,8 @@ export const handleFilterTextInImage = async (
     } catch (e) {
       setIsCpfImagemValid(false);
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   }
 };
